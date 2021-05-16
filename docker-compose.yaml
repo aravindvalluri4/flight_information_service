@@ -1,0 +1,20 @@
+version: '3'
+services:
+  pg:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  fligts:
+    image: flights_service:1.0
+    restart: always
+    environment:
+      - POSTGRES_SERVICE_HOST=pg
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_SERVICE_PORT=5432
+      - POSTGRES_DBNAME=postgres
+      - JWT_SECRET_KEY=somesecret
+    ports:
+      -  5000:5000
+

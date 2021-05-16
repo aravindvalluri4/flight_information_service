@@ -1,0 +1,233 @@
+#%RAML 1.0
+---
+title: Flight Details
+baseUri: http://localhost:5000/api/v1
+version: 1.0.0
+
+traits: 
+  hasHeaders: 
+     headers:
+        Authorization:
+        description: |
+            The header should contain a valid token
+        type: string
+
+/auth:
+    /signup:
+        post:
+            body:
+                application/json:
+                    example: |
+                        {
+                            "username": "user1",
+                            "password": "user1_pw"
+                        }
+            responses:
+                201:
+                    body:
+                        application/json:
+                            example:
+                                { "message": "user successfully created"}
+                409:
+                    body:
+                        application/json:
+                            example:
+                                { "message": "username already taken"}
+                400:
+                    body:
+                        application/json:
+                            example:
+                                { "message": "username is missing"}
+    /login:
+        post:
+            body:
+                application/json:
+                    example: |
+                        {
+                            "username": "user1",
+                            "password": "user1_pw"
+                        }
+            responses:
+                200:
+                    body:
+                        application/json:
+                            example:
+                                { 
+                                    "message": "login success",
+                                     "token" : "Some token!"
+                                }
+                401:
+                    body:
+                        application/json:
+                            example:
+                                { "message": "invalid credentials"}
+                400:
+                    body:
+                        application/json:
+                            example:
+                                { "message": "username is missing"}
+
+/flights:
+    get:
+        is: ["hasHeaders"]
+        description: "Get All Flights. Supports pagination and queryparameter"
+        queryParameters:
+            start:
+                type: number 
+                description: start at record               
+            limit:
+                type: number 
+                description: limit records
+            flight_name:
+                type: string
+                description: fliter based on flight name
+            scheduled_date:
+                type: string
+                description: filter based on departure date
+            departure:
+                type: string
+                description: filter based on departure location
+            destination:
+                type: string
+                description: filter based on destination location 
+        responses:
+            200:
+                body:
+                    application/json:
+                        example: |
+                            [
+                                  {
+                                    "flight_name": "SAS",
+                                    "schedule_date_time": "2021-02-04 04:05:06",
+                                    "arrival_date_time": "2021-02-04 20:05:06",
+                                    "departure": "hyderabad",
+                                    "fare": "2000.00",
+                                    "flight_duration_mins": 320,
+                                    "destination": "stockholm",
+                                    "flight_number": 555,
+                                    "id": "60c797f3-43fe-4a0f-9405-e9ad29474c98"
+                                    },
+                                                                      {
+                                    "flight_name": "SAS",
+                                    "schedule_date_time": "2021-02-04 04:05:06",
+                                    "arrival_date_time": "2021-02-04 20:05:06",
+                                    "departure": "hyderabad",
+                                    "fare": "2000.00",
+                                    "flight_duration_mins": 320,
+                                    "destination": "stockholm",
+                                    "flight_number": 555,
+                                    "id": "a969e47b-46a8-47c7-8100-b1530275faab"
+                                    }  
+                              ]            
+    post:
+        is: ["hasHeaders"]
+        body:
+            application/json:
+                example: |
+                    {
+                        "flight_name": "SAS",
+                        "schedule_date_time": "2021-02-04 04:05:06",
+                        "arrival_date_time": "2021-02-04 20:05:06",
+                        "departure": "hyderabad",
+                        "fare": "2000.00",
+                        "flight_duration_mins": 320,
+                        "destination": "stockholm",
+                        "flight_number": 555
+                    }
+        responses:
+           201:
+               description: "Sucessfully created"
+               body:
+                   application/json:
+                       example: |
+                           {
+                               "message": "New Flight created"
+                               "id": "a969e47b-46a8-47c7-8100-b1530275faab"
+                           }
+           400:
+               description: "Mandatory feilds may be missing"
+               body:
+                   application/json:
+                       example: |
+                           {
+                               "message": "missing flight_name"
+                           }
+           409:
+               description: "Flight may exists"
+               body:
+                   application/json:
+                       example: |
+                           {
+                               "message": "This fight already present"
+                               "id" : "a969e47b-46a8-47c7-8100-b1530275faab"
+                           }
+                 
+                 
+    /{flightId}:
+        get:
+            is: ["hasHeaders"]
+            responses:
+                200:
+                    description: "success"
+                    body:
+                        application/json:
+                            example: |
+                                {
+                                    "flight_name": "SAS",
+                                    "schedule_date_time": "2021-02-04 04:05:06",
+                                    "arrival_date_time": "2021-02-04 20:05:06",
+                                    "departure": "hyderabad",
+                                    "fare": "2000.00",
+                                    "flight_duration_mins": 320,
+                                    "destination": "stockholm",
+                                    "flight_number": 555
+                                } 
+                404:
+                    description: "Resource does not exists"
+                    body:
+                        application/json:
+                            example: |
+                                { "message" : "No Resource" }
+        put:
+            is: ["hasHeaders"]
+            body:
+                application/json:
+                    example: |
+                      {
+                        "flight_name": "SAS",
+                        "schedule_date_time": "2021-02-04 04:05:06",
+                        "arrival_date_time": "2021-02-04 20:05:06",
+                        "departure": "hyderabad",
+                      }
+            responses:
+                200:
+                    description: "success"
+                    body:
+                        application/json:
+                            example: |
+                                { "message" : "Flight details updated" 
+                                  "id":"a969e47b-46a8-47c7-8100-b1530275faab"
+                                }
+                404:
+                    description: "Resource does not exists"
+                    body:
+                        application/json:
+                            example: |
+                                { "message" : "No Resource" }
+        delete:
+            is: ["hasHeaders"]
+            responses:
+                200:
+                    description: "success"
+                    body:
+                        application/json:
+                            example: |
+                                { "message" : "Flight details deleted" }
+                404:
+                    description: "Resource does not exists"
+                    body:
+                        application/json:
+                            example: |
+                                { "message" : "No Resource" }
+
+
