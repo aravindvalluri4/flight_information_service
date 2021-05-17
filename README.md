@@ -2,7 +2,7 @@
 
 Flight information service provides information of flights between cities. It allows
 various operation to add/delete/update&view flight information. User should be
-authenticated to utilize this services. User can signup and login using
+authenticated to utilize these services. User can signup and login using
 this service. Ideal design would be to have different services for flight information
 and security services(signup, login). But for now its desgined in same service.
 Postgres is used as backend and JWT is used for authorization.
@@ -79,5 +79,5 @@ For API description and usage examples, please refer to api secps.
 
 
 ```bash
-firefox service.html&
+firefox doc/service.html&
 ```
