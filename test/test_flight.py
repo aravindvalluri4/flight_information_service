@@ -70,7 +70,7 @@ class FlightApiTests(unittest.TestCase):
         code, body = self.get_flight(id)
         self.assertEqual("20.00",body["fare"])
 
-    def test_update_flight_200(self):
+    def test_delete_flight_200(self):
         # create a flight
         id = self.create_flight()
 
